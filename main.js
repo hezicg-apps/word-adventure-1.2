@@ -760,3 +760,4 @@ function submitFinalReport(score) {
 // חיבור הפונקציה לחלון הגלובלי
 window.submitFinalReport = submitFinalReport;
 
+
