@@ -728,7 +728,6 @@ window.submitFinalReport = (score) => {
     const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; 
 
     const btn = event.target;
-    const originalText = btn.innerText;
     btn.innerText = "שולח... ⏳";
     btn.disabled = true;
 
@@ -739,17 +738,29 @@ window.submitFinalReport = (score) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     }).then(() => {
+        // שמירת הציון בזיכרון המקומי כדי שהמשחקים ייפתחו
+        state.masteryScore = score;
+        saveToLocal();
+
+        // עדכון התצוגה לכפתור מעבר למשחקים
         document.getElementById('reportSection').innerHTML = `
-            <div class="p-4 bg-green-100 text-green-700 rounded-xl font-bold animate-bounce">
-                הדיווח נשלח בהצלחה למורה! 🚀
+            <div class="space-y-4 animate-fade-in text-center">
+                <div class="p-4 bg-green-100 text-green-700 rounded-xl font-bold border-2 border-green-200">
+                    הדיווח נשלח בהצלחה! ✅
+                </div>
+                <button onclick="state.screen='menu'; render();" 
+                    class="w-full py-5 bg-blue-600 text-white rounded-2xl text-2xl font-black shadow-xl hover:bg-blue-700 active:scale-95 transition-all">
+                    המשך למשחקים 🎮 ⮕
+                </button>
             </div>`;
-    }).catch(err => {
-        console.error(err);
-        alert("שגיאה בשליחה. וודא שחיבור האינטרנט תקין.");
-        btn.innerText = originalText;
+    }).catch((err) => {
+        console.error("שגיאת שליחה:", err);
+        btn.innerText = "שליחת דיווח 📤";
         btn.disabled = false;
+        alert("הייתה תקלה בשליחה. נסה שוב.");
     });
 };
+
 
 
 
